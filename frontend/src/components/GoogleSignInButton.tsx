@@ -15,6 +15,17 @@ declare global {
           renderButton: (parent: HTMLElement, options: any) => void;
           prompt: (momentListener?: (notification: any) => void) => void;
         };
+        oauth2: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            prompt?: string;
+            callback: (response: any) => void;
+            error_callback?: (error: any) => void;
+          }) => {
+            requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
+          };
+        };
       };
     };
   }
@@ -22,6 +33,7 @@ declare global {
 
 export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onError }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const tokenClientRef = useRef<any>(null);
   const [isGisReady, setIsGisReady] = useState<boolean>(false);
   const [gisError, setGisError] = useState<string | null>(null);
   const [showOriginHelp, setShowOriginHelp] = useState<boolean>(false);
@@ -35,15 +47,16 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
     if (!isConfigured) return;
 
     let attempts = 0;
-    const maxAttempts = 40; // 40 * 150ms = 6 seconds
+    const maxAttempts = 50; // 50 * 150ms = 7.5 seconds
 
     const initGis = () => {
-      if (window.google?.accounts?.id && containerRef.current) {
+      if (window.google?.accounts && containerRef.current) {
         try {
+          // 1. Initialize Google Identity Services ID client
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: (response: any) => {
-              if (response.credential) {
+              if (response?.credential) {
                 onSuccess(response.credential);
               } else {
                 onError('No identity credential returned by Google.');
@@ -53,10 +66,11 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
             cancel_on_tap_outside: true,
           });
 
-          // Clear previous render to prevent duplicates
+          // 2. Clear previous child nodes and render official GIS button
           containerRef.current.innerHTML = '';
+          const containerWidth = containerRef.current.offsetWidth || 380;
+          const buttonWidth = Math.max(280, Math.min(containerWidth, 400));
 
-          // Render official Google Sign-In button
           window.google.accounts.id.renderButton(containerRef.current, {
             theme: 'outline',
             size: 'large',
@@ -64,15 +78,36 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
             text: 'continue_with',
             shape: 'rectangular',
             logo_alignment: 'left',
-            width: containerRef.current.offsetWidth ? Math.min(containerRef.current.offsetWidth, 400) : 380,
+            width: buttonWidth,
           });
 
+          // 3. Initialize OAuth2 Token Client with prompt: 'select_account'
+          // This forces Google to fetch and display all accounts on the device
+          if (window.google.accounts.oauth2) {
+            tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+              client_id: clientId,
+              scope: 'openid email profile',
+              prompt: 'select_account',
+              callback: (tokenResponse: any) => {
+                if (tokenResponse?.access_token) {
+                  onSuccess(tokenResponse.access_token);
+                } else if (tokenResponse?.error) {
+                  onError(`Google authorization failed: ${tokenResponse.error}`);
+                }
+              },
+              error_callback: (err: any) => {
+                console.error('Google OAuth error:', err);
+                setShowOriginHelp(true);
+              }
+            });
+          }
+
           setIsGisReady(true);
+          return true;
         } catch (err: any) {
           console.error('Failed to initialize Google Identity Services:', err);
           setGisError('Could not initialize Google authentication.');
         }
-        return true;
       }
       return false;
     };
@@ -83,7 +118,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
       attempts++;
       if (initGis() || attempts >= maxAttempts) {
         clearInterval(interval);
-        if (attempts >= maxAttempts && !window.google?.accounts?.id) {
+        if (attempts >= maxAttempts && !window.google?.accounts) {
           setGisError('Google Identity library took too long to load or was blocked.');
         }
       }
@@ -97,7 +132,11 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
       setShowOriginHelp(true);
       return;
     }
-    if (window.google?.accounts?.id) {
+
+    // Force Google Account Chooser showing all accounts on the user's device
+    if (tokenClientRef.current) {
+      tokenClientRef.current.requestAccessToken({ prompt: 'select_account' });
+    } else if (window.google?.accounts?.id) {
       window.google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
           setShowOriginHelp(true);
@@ -110,14 +149,16 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
 
   return (
     <div className="w-full space-y-2">
-      {/* Container where Google Identity Services mounts its official secure iframe */}
-      <div 
-        ref={containerRef} 
-        id="google-official-btn-container" 
-        className={`w-full flex justify-center min-h-[44px] ${!isGisReady ? 'hidden' : ''}`}
+      {/* Official Google Sign-In button container */}
+      <div
+        ref={containerRef}
+        id="google-official-btn-container"
+        className={`w-full flex justify-center min-h-[44px] transition-opacity duration-200 ${
+          isGisReady ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
+        }`}
       />
 
-      {/* Fallback button shown while GIS is loading or if GIS fails to render */}
+      {/* Fallback button shown while GIS is initializing or if custom click is triggered */}
       {!isGisReady && (
         <button
           type="button"
@@ -192,3 +233,4 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
     </div>
   );
 };
+
