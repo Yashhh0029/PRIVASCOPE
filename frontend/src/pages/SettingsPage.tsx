@@ -6,25 +6,25 @@ export const SettingsPage: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <div className="flex-1 p-8 max-w-4xl mx-auto w-full space-y-8">
+    <div className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">System & Account Settings</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">System & Account Settings</h1>
         <p className="text-xs text-priva-muted">Manage privacy profiles and review firewall configuration</p>
       </div>
 
       {/* User Profile Card */}
-      <div className="p-6 rounded-xl border border-priva-border bg-priva-card space-y-4">
+      <div className="p-4 sm:p-6 rounded-xl border border-priva-border bg-priva-card space-y-4">
         <div className="flex items-center gap-3 border-b border-priva-border pb-4">
-          <div className="w-10 h-10 rounded-full bg-priva-primary/10 border border-priva-primary/30 flex items-center justify-center text-priva-primary font-bold">
+          <div className="w-10 h-10 rounded-full bg-priva-primary/10 border border-priva-primary/30 flex items-center justify-center text-priva-primary font-bold shrink-0">
             {user?.name.charAt(0).toUpperCase()}
           </div>
-          <div>
-            <h3 className="font-semibold text-white text-sm">{user?.name}</h3>
-            <p className="text-xs text-priva-muted font-mono">{user?.email}</p>
+          <div className="min-w-0">
+            <h3 className="font-semibold text-white text-sm truncate">{user?.name}</h3>
+            <p className="text-xs text-priva-muted font-mono truncate">{user?.email}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs font-mono">
           <div>
             <span className="text-priva-muted block text-[10px] uppercase">User Role</span>
             <span className="text-slate-200 uppercase">{user?.role}</span>
@@ -37,13 +37,13 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Architecture & Telemetry Card */}
-      <div className="p-6 rounded-xl border border-priva-border bg-priva-card space-y-4">
+      <div className="p-4 sm:p-6 rounded-xl border border-priva-border bg-priva-card space-y-4">
         <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-          <Server className="w-4 h-4 text-priva-primary" />
+          <Server className="w-4 h-4 text-priva-primary shrink-0" />
           <span>Firewall Deployment Specifications</span>
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs font-mono">
           <div className="p-3 rounded-lg bg-priva-bg border border-priva-border space-y-1">
             <span className="text-[10px] text-priva-muted uppercase block">Core Detection Engine</span>
             <span className="text-emerald-400 font-semibold">Local Hybrid (Air-Gapped)</span>
@@ -64,7 +64,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Official Product Policy Statement */}
-      <div className="p-6 rounded-xl border border-priva-primary/30 bg-priva-primary/5 space-y-3">
+      <div className="p-4 sm:p-6 rounded-xl border border-priva-primary/30 bg-priva-primary/5 space-y-3">
         <div className="flex items-center gap-2 text-priva-primary">
           <Info className="w-4 h-4 shrink-0" />
           <h4 className="font-semibold text-xs uppercase tracking-wider font-mono">Product Risk Policy Disclaimer</h4>

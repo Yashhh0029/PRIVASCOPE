@@ -29,15 +29,15 @@ export const HistoryPage: React.FC = () => {
   );
 
   return (
-    <div className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Firewall Audit History</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Firewall Audit History</h1>
           <p className="text-xs text-priva-muted">Historical log of document scans and generated protection policies</p>
         </div>
 
         {/* Search */}
-        <div className="relative w-64">
+        <div className="relative w-full sm:w-64">
           <Search className="w-4 h-4 text-priva-muted absolute left-3 top-2.5" />
           <input
             type="text"
@@ -64,7 +64,7 @@ export const HistoryPage: React.FC = () => {
       ) : (
         <div className="border border-priva-border rounded-xl bg-priva-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[620px] text-left text-xs">
               <thead className="bg-priva-bg/80 border-b border-priva-border text-[11px] font-mono uppercase text-priva-muted">
                 <tr>
                   <th className="py-3 px-4">Document / File</th>

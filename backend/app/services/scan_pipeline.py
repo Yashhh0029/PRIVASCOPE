@@ -14,6 +14,24 @@ from app.detectors import ALL_DETECTORS, Detection, DetectionContext
 from app.services.risk_engine import risk_engine
 from app.services.ocr_service import ocr_service
 from app.core.logger import logger
+import re
+
+def normalize_entity_value(entity_type: str, matched_value: str) -> str:
+    """
+    Computes a canonical normalized representation of a detected entity value
+    for identity matching and deduplication across different document blocks,
+    formatting variants, and prefixes.
+    """
+    raw = (matched_value or "").strip()
+    if entity_type == "PHONE":
+        digits = re.sub(r'\D', '', raw)
+        return digits[-10:] if len(digits) >= 10 else digits
+    elif entity_type == "EMAIL":
+        return raw.lower()
+    elif entity_type in ("PAN", "AADHAAR", "IFSC", "UPI", "STUDENT_ID", "BANK_ACCOUNT"):
+        return re.sub(r'\s+', '', raw).upper()
+    return raw.lower()
+
 
 STAGE_CONFIG = [
     {"name": "validating", "label": "Validating file integrity"},
@@ -102,12 +120,21 @@ class ScanPipeline:
             scan.status = "context"
             update_stage("context", "processing")
             
-            # Deduplicate overlapping matches by prioritizing higher confidence and longer match
-            deduped: dict[tuple[int, int, str], Detection] = {}
+            # Deduplicate by stable entity identity: (entity_type, normalized_value)
+            # Retain the richest and highest-confidence detection instance
+            deduped: dict[tuple[str, str], Detection] = {}
             for d in all_detections:
-                key = (d.block_index, d.start, d.entity_type)
-                if key not in deduped or d.confidence > deduped[key].confidence:
+                norm_val = normalize_entity_value(d.entity_type, d.matched_value)
+                key = (d.entity_type, norm_val)
+                if key not in deduped:
                     deduped[key] = d
+                else:
+                    existing = deduped[key]
+                    # Score richness: confidence first, then source diversity, then matched length
+                    new_score = (d.confidence, len(d.detection_source), len(d.matched_value))
+                    existing_score = (existing.confidence, len(existing.detection_source), len(existing.matched_value))
+                    if new_score > existing_score:
+                        deduped[key] = d
             
             final_detections = list(deduped.values())
             update_stage("context", "completed", "Structural & context fusion applied")

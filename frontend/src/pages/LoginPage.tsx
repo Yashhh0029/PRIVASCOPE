@@ -31,23 +31,23 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center p-6 relative z-10">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-4 py-8 sm:p-6 relative z-10">
       {/* Intro Header: Blur -> Sharp Logo Reveal */}
-      <div className="text-center space-y-2 mb-8">
+      <div className="text-center space-y-2 mb-6 sm:mb-8">
         <motion.div
           initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-cyan-400 mx-auto shadow-lg shadow-indigo-500/10"
+          className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-cyan-400 mx-auto shadow-lg shadow-indigo-500/10"
         >
-          <Shield className="w-7 h-7" />
+          <Shield className="w-6 h-6 sm:w-7 sm:h-7" />
         </motion.div>
 
         <motion.h1
           initial={shouldReduceMotion ? {} : { opacity: 0, y: 10, filter: 'blur(10px)' }}
           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-3xl font-extrabold text-white tracking-wider font-mono"
+          className="text-2xl sm:text-3xl font-extrabold text-white tracking-wider font-mono"
         >
           PRIVASCOPE
         </motion.h1>
@@ -56,7 +56,7 @@ export const LoginPage: React.FC = () => {
           initial={shouldReduceMotion ? {} : { opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          className="text-xs font-mono text-cyan-400/90 tracking-widest uppercase"
+          className="text-[10px] sm:text-xs font-mono text-cyan-400/90 tracking-widest uppercase"
         >
           Personal Data Firewall &middot; Local Security Gateway
         </motion.p>
@@ -67,7 +67,7 @@ export const LoginPage: React.FC = () => {
         initial={shouldReduceMotion ? {} : { opacity: 0, y: 30, filter: 'blur(10px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 0.4, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md p-8 rounded-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-xl shadow-2xl space-y-6 glow-indigo"
+        className="w-full max-w-md p-5 sm:p-8 rounded-2xl border border-slate-800/80 bg-slate-900/80 backdrop-blur-xl shadow-2xl space-y-5 sm:space-y-6 glow-indigo"
       >
         <div className="text-center space-y-1">
           <h2 className="text-xl font-bold text-white tracking-tight">Firewall Authentication</h2>

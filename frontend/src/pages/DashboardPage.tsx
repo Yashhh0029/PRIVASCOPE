@@ -82,20 +82,20 @@ export const DashboardPage: React.FC = () => {
   const isEmpty = !stats || stats.total_scans === 0;
 
   return (
-    <div className="flex-1 p-6 lg:p-8 space-y-8 max-w-7xl mx-auto w-full relative z-10">
+    <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full relative z-10">
       {/* Command Center Header */}
       <motion.div 
         initial={shouldReduceMotion ? {} : { opacity: 0, y: -12, filter: 'blur(4px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center justify-between flex-wrap gap-4 border-b border-slate-800/80 pb-5"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-5"
       >
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-mono font-semibold uppercase tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
             PRIVASCOPE Command Center
           </div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-white tracking-tight font-sans">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight font-sans">
             Personal Data Firewall Telemetry
           </h1>
           <p className="text-xs text-slate-400">
@@ -103,17 +103,17 @@ export const DashboardPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
           <Link
             to="/ai-firewall"
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-indigo-500/30 hover:border-indigo-500/60 text-indigo-300 font-medium text-xs transition-colors"
+            className="flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-indigo-500/30 hover:border-indigo-500/60 text-indigo-300 font-medium text-xs transition-colors"
           >
             <Shield className="w-4 h-4 text-cyan-400" />
             <span>AI Gateway (Mode B)</span>
           </Link>
           <Link
             to="/scan"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium text-xs shadow-md shadow-indigo-600/20 transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium text-xs shadow-md shadow-indigo-600/20 transition-all"
           >
             <ScanLine className="w-4 h-4" />
             <span>New Document Scan</span>
@@ -268,7 +268,7 @@ export const DashboardPage: React.FC = () => {
 
           {/* Recent Scans Table */}
           <ScrollReveal delay={0.08}>
-            <div className="border border-slate-800 rounded-2xl bg-slate-900/70 backdrop-blur-md overflow-hidden space-y-2 p-5 shadow-sm">
+            <div className="border border-slate-800 rounded-2xl bg-slate-900/70 backdrop-blur-md overflow-hidden space-y-2 p-3.5 sm:p-5 shadow-sm">
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <Activity className="w-4 h-4 text-cyan-400" />
@@ -280,7 +280,7 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full min-w-[540px] text-left text-xs">
                   <thead className="text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
                     <tr>
                       <th className="py-2.5">Document</th>

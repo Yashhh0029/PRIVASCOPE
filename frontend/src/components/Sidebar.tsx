@@ -25,7 +25,7 @@ export const Sidebar: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <aside className="w-64 border-r border-priva-border/80 bg-priva-card/60 backdrop-blur-md flex flex-col justify-between py-6 px-4 shrink-0 min-h-[calc(100vh-4rem)] relative z-20">
+    <aside className="hidden lg:flex w-64 border-r border-priva-border/80 bg-priva-card/60 backdrop-blur-md flex-col justify-between py-6 px-4 shrink-0 min-h-[calc(100vh-4rem)] relative z-20">
       <div className="space-y-6">
         <div>
           <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 px-3 mb-2 flex items-center justify-between">

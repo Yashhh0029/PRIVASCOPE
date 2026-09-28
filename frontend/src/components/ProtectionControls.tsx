@@ -60,15 +60,15 @@ export const ProtectionControls: React.FC<ProtectionControlsProps> = ({
   };
 
   return (
-    <div className="border border-priva-border rounded-xl bg-priva-card p-6 space-y-6">
-      <div className="flex items-center justify-between border-b border-priva-border pb-4">
+    <div className="border border-priva-border rounded-xl bg-priva-card p-4 sm:p-6 space-y-5 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-0 border-b border-priva-border pb-4">
         <div>
           <h3 className="font-semibold text-white text-base">Privacy Firewall Policy</h3>
           <p className="text-xs text-priva-muted">
             Configure sanitization action for {entityCount} detected personal identifiers.
           </p>
         </div>
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-priva-primary/10 border border-priva-primary/30 text-priva-primary text-xs font-mono">
+        <div className="self-start sm:self-auto flex items-center gap-1.5 px-2.5 py-1 rounded bg-priva-primary/10 border border-priva-primary/30 text-priva-primary text-xs font-mono">
           <ShieldCheck className="w-4 h-4" />
           <span>Server-Side Guard</span>
         </div>
@@ -129,11 +129,11 @@ export const ProtectionControls: React.FC<ProtectionControlsProps> = ({
       )}
 
       {/* Action Trigger Buttons */}
-      <div className="flex items-center justify-between flex-wrap gap-4 pt-2">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-2">
         <button
           onClick={handleApplyProtection}
           disabled={isProcessing || !documentId}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-priva-primary hover:bg-priva-primaryHover disabled:opacity-50 text-white font-medium text-sm transition-all shadow-md shadow-priva-primary/20"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-priva-primary hover:bg-priva-primaryHover disabled:opacity-50 text-white font-medium text-sm transition-all shadow-md shadow-priva-primary/20 w-full sm:w-auto"
         >
           {isProcessing ? (
             <>
@@ -149,15 +149,15 @@ export const ProtectionControls: React.FC<ProtectionControlsProps> = ({
         </button>
 
         {(actionId || hasProtectedFile) && (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-priva-low font-mono bg-priva-low/10 px-3 py-1.5 rounded-lg border border-priva-low/30">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-priva-low font-mono bg-priva-low/10 px-3 py-1.5 rounded-lg border border-priva-low/30">
               <CheckCircle className="w-4 h-4" />
               <span>Verification Passed</span>
             </div>
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-colors shadow-md shadow-emerald-900/30"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-colors shadow-md shadow-emerald-900/30 w-full sm:w-auto"
             >
               <Download className="w-4 h-4" />
               <span>Download Protected File</span>

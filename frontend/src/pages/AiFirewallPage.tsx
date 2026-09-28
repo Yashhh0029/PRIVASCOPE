@@ -194,9 +194,9 @@ export const AiFirewallPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 p-6 lg:p-8 max-w-7xl mx-auto w-full relative z-10">
+    <div className="space-y-6 sm:space-y-8 p-3.5 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full relative z-10">
       {/* Hero Header with Animated Pipeline Visualization */}
-      <div className="rounded-3xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl p-6 lg:p-8 shadow-2xl relative overflow-hidden">
+      <div className="rounded-2xl sm:rounded-3xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-2xl relative overflow-hidden">
         {/* Ambient Top Glow */}
         <div className="absolute top-0 right-1/4 w-96 h-40 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -206,7 +206,7 @@ export const AiFirewallPage: React.FC = () => {
               <Shield className="w-3.5 h-3.5 text-cyan-400" />
               AI Privacy Firewall & Gateway (Mode B)
             </div>
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
               Protect Before Your Data Leaves Your Device.
             </h1>
             <p className="text-slate-400 text-xs lg:text-sm leading-relaxed">
@@ -217,7 +217,7 @@ export const AiFirewallPage: React.FC = () => {
 
           {/* Real-time Telemetry Stats Pill */}
           {stats && (
-            <div className="flex items-center gap-4 bg-slate-950/70 p-4 rounded-2xl border border-slate-800 backdrop-blur-md shrink-0">
+            <div className="flex items-center justify-between sm:justify-start gap-4 bg-slate-950/70 p-3.5 sm:p-4 rounded-2xl border border-slate-800 backdrop-blur-md shrink-0">
               <div className="text-right">
                 <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Shielded Entities</div>
                 <div className="text-2xl font-bold font-mono text-cyan-400">
@@ -243,7 +243,7 @@ export const AiFirewallPage: React.FC = () => {
             <span className="h-px flex-1 bg-slate-800" />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3 items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 items-center">
             {/* Stage 1: User Device */}
             <div className={`p-3 rounded-xl border text-center transition-all ${
               activePipelineStep >= 1 ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-300' : 'border-slate-800 bg-slate-950/60 text-slate-400'
@@ -333,8 +333,8 @@ export const AiFirewallPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Outbound Prompt & Controls */}
         <div className="lg:col-span-6 space-y-5">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-lg backdrop-blur-md">
-            <div className="flex items-center justify-between">
+          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-white font-semibold text-sm">
                 <Cpu className="w-4 h-4 text-cyan-400" />
                 <span>Outbound Prompt Interceptor</span>
@@ -342,11 +342,11 @@ export const AiFirewallPage: React.FC = () => {
 
               {/* Provider Selection */}
               <div className="flex items-center gap-2">
-                <label className="text-[11px] text-slate-400 font-mono">Target Provider:</label>
+                <label className="text-[11px] text-slate-400 font-mono shrink-0">Target Provider:</label>
                 <select
                   value={selectedProvider}
                   onChange={(e) => setSelectedProvider(e.target.value)}
-                  className="bg-slate-950 border border-slate-800 text-xs text-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-cyan-500 font-mono"
+                  className="bg-slate-950 border border-slate-800 text-xs text-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-cyan-500 font-mono w-full sm:w-auto"
                 >
                   {providers.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -364,9 +364,9 @@ export const AiFirewallPage: React.FC = () => {
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={7}
                 placeholder="Type or paste any query or sensitive prompt you intend to send to an external AI..."
-                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-xs font-mono focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 leading-relaxed transition-all resize-none"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 sm:p-4 text-slate-200 text-xs font-mono focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 leading-relaxed transition-all resize-none"
               />
-              <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 px-1 font-mono">
+              <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 text-[11px] text-slate-500 mt-2 px-1 font-mono">
                 <span>{prompt.length} characters</span>
                 <span className="flex items-center gap-1 text-cyan-400">
                   <ShieldCheck className="w-3.5 h-3.5" />
@@ -376,7 +376,7 @@ export const AiFirewallPage: React.FC = () => {
             </div>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -384,7 +384,7 @@ export const AiFirewallPage: React.FC = () => {
                   setResult(null);
                   setActivePipelineStep(0);
                 }}
-                className="text-xs text-slate-500 hover:text-slate-300 transition-colors font-mono"
+                className="text-xs text-slate-500 hover:text-slate-300 transition-colors font-mono py-1 text-center"
               >
                 Clear input
               </button>
@@ -393,7 +393,7 @@ export const AiFirewallPage: React.FC = () => {
                 disabled={loading || !prompt.trim()}
                 whileHover={shouldReduceMotion ? {} : { y: -1 }}
                 whileTap={shouldReduceMotion ? {} : { scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium text-xs shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium text-xs shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all w-full sm:w-auto"
               >
                 {loading ? (
                   <>

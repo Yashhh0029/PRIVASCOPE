@@ -30,13 +30,13 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
     : null;
 
   return (
-    <div className="border border-priva-border rounded-xl bg-priva-card overflow-hidden flex flex-col h-[520px]">
+    <div className="border border-priva-border rounded-xl bg-priva-card overflow-hidden flex flex-col h-[380px] sm:h-[520px]">
       {/* Top Bar Controls */}
-      <div className="px-4 py-2.5 bg-priva-bg/80 border-b border-priva-border flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2 text-priva-muted">
-          {isVisualFormat ? <ImageIcon className="w-4 h-4 text-priva-primary" /> : <FileText className="w-4 h-4 text-priva-primary" />}
-          <span className="font-mono text-white truncate max-w-xs">{filename || "Document Preview"}</span>
-          <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-priva-border text-priva-muted">
+      <div className="px-3 sm:px-4 py-2 sm:py-2.5 bg-priva-bg/80 border-b border-priva-border flex items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-priva-muted min-w-0">
+          {isVisualFormat ? <ImageIcon className="w-4 h-4 text-priva-primary flex-shrink-0" /> : <FileText className="w-4 h-4 text-priva-primary flex-shrink-0" />}
+          <span className="font-mono text-white truncate max-w-[110px] xs:max-w-[160px] sm:max-w-xs">{filename || "Document Preview"}</span>
+          <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-priva-border text-priva-muted flex-shrink-0">
             {fileType || "TXT"}
           </span>
         </div>
@@ -73,7 +73,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
               src={previewUrl}
               alt="Document Scan Preview"
               onError={() => setPreviewError(true)}
-              className="rounded shadow-xl max-h-[440px] w-auto border border-priva-border object-contain"
+              className="rounded shadow-xl max-h-[300px] sm:max-h-[440px] w-auto border border-priva-border object-contain"
             />
 
             {/* Bounding Box Heatmap Overlays */}

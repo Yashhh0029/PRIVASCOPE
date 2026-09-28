@@ -109,9 +109,9 @@ export const ScanPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 p-8 max-w-4xl mx-auto w-full space-y-8">
+    <div className="flex-1 px-3.5 py-6 sm:p-8 max-w-4xl mx-auto w-full space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Initiate Privacy Scan</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Initiate Privacy Scan</h1>
         <p className="text-xs text-priva-muted">
           Upload documents or paste text to detect Indian personal identifiers and assess exposure.
         </p>
@@ -127,7 +127,7 @@ export const ScanPage: React.FC = () => {
         <div className="space-y-6">
           {/* Sharing Purpose Context Selector */}
           <div className="p-4 rounded-xl bg-priva-card/60 border border-priva-border space-y-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <label className="text-xs font-semibold text-white">Intended Document Sharing Purpose</label>
                 <p className="text-[11px] text-priva-muted">
@@ -137,7 +137,7 @@ export const ScanPage: React.FC = () => {
               <select
                 value={sharingPurpose}
                 onChange={(e) => setSharingPurpose(e.target.value)}
-                className="bg-priva-bg border border-priva-border text-xs text-priva-primary font-medium rounded-lg px-3 py-2 focus:outline-none focus:border-priva-primary"
+                className="w-full sm:w-auto bg-priva-bg border border-priva-border text-xs text-priva-primary font-medium rounded-lg px-3 py-2 focus:outline-none focus:border-priva-primary shrink-0"
               >
                 <option value="General Sharing">General Sharing (Default: Protect All PII)</option>
                 <option value="Job Application">Job Application (Keep Phone/Email/ID, Protect Aadhaar/Bank)</option>
@@ -190,7 +190,7 @@ export const ScanPage: React.FC = () => {
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all ${
                   dragActive
                     ? 'border-priva-primary bg-priva-primary/10'
                     : 'border-priva-border bg-priva-card/50 hover:bg-priva-card hover:border-priva-borderLight'

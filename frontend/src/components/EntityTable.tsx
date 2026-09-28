@@ -59,7 +59,7 @@ export const EntityTable: React.FC<EntityTableProps> = ({ entities, onSelectEnti
       {/* Entities Table */}
       <div className="border border-priva-border rounded-xl bg-priva-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[550px] text-left text-sm">
             <thead className="bg-priva-bg/60 border-b border-priva-border text-[11px] font-mono text-priva-muted uppercase">
               <tr>
                 <th className="py-3 px-4">Entity Type</th>
@@ -136,8 +136,8 @@ export const EntityTable: React.FC<EntityTableProps> = ({ entities, onSelectEnti
 
       {/* Detection Signals Modal / Overlay */}
       {activeSignalEntity && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-priva-card border border-priva-border rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-priva-card border border-priva-border rounded-xl max-w-md w-full p-4 sm:p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-priva-border pb-3">
               <div className="flex items-center gap-2">
                 <ShieldAlert className="w-5 h-5 text-priva-primary" />

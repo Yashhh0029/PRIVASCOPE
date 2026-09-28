@@ -22,8 +22,8 @@ export const AuditPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
-      <div className="flex items-center justify-between border-b border-priva-border pb-4">
+    <div className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-priva-border pb-4">
         <div>
           <div className="flex items-center gap-2">
             <ScrollText className="w-5 h-5 text-priva-primary" />
@@ -34,7 +34,7 @@ export const AuditPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-priva-border bg-priva-card text-xs font-mono text-priva-muted">
+        <div className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-priva-border bg-priva-card text-xs font-mono text-priva-muted">
           <ShieldCheck className="w-4 h-4 text-priva-low" />
           <span>Zero-PII Compliance Enforced</span>
         </div>
@@ -55,7 +55,7 @@ export const AuditPage: React.FC = () => {
       ) : (
         <div className="border border-priva-border rounded-xl bg-priva-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[550px] text-left text-xs">
               <thead className="bg-priva-bg/80 border-b border-priva-border text-[11px] font-mono uppercase text-priva-muted">
                 <tr>
                   <th className="py-3 px-4">Action</th>
