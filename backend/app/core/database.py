@@ -33,7 +33,10 @@ def init_db() -> None:
     if 'users' in inspector.get_table_names():
         cols = {c['name'] for c in inspector.get_columns('users')}
         with engine.begin() as conn:
+            is_pg = engine.dialect.name == "postgresql"
             if 'is_active' not in cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT 1"))
+                default_val = "TRUE" if is_pg else "1"
+                conn.execute(text(f"ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT {default_val}"))
             if 'last_login_at' not in cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN last_login_at DATETIME"))
+                col_type = "TIMESTAMP" if is_pg else "DATETIME"
+                conn.execute(text(f"ALTER TABLE users ADD COLUMN last_login_at {col_type}"))

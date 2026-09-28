@@ -251,19 +251,40 @@ Frontend will be accessible at `http://localhost:5173`.
 
 ---
 
-## Deployment
+## Deployment (₹0 Permanent Free Production Architecture)
 
-### Render Deployment (Recommended)
+PRIVASCOPE is configured for a permanent zero-cost production stack:
+- **Frontend**: **Vercel Hobby** (React + Vite Single Page Application with client-side rewrite routing)
+- **Backend**: **Render Free Web Service** (FastAPI running on Python with automatic Alembic migrations)
+- **Database**: **Supabase Free PostgreSQL** (Permanent free tier, avoiding Render's 30-day PostgreSQL expiry)
 
-PRIVASCOPE includes a pre-configured `render.yaml` blueprint defining:
-1. **`privascope-api`**: FastAPI Web Service running on Python 3.12.
-2. **`privascope-web`**: Static Site hosting the React production bundle.
-3. **`privascope-db`**: Managed PostgreSQL database instance.
+```
+Vercel Hobby (React/Vite SPA) ──[HTTPS]──> Render Free (FastAPI) ────> Supabase Free (PostgreSQL)
+```
 
-To deploy on Render:
-1. Push repository to your Git provider (GitHub / GitLab).
-2. Connect your repository to Render via **Blueprints** (`render.yaml`).
-3. Set the required production environment variables (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`).
+### 1. Database Setup (Supabase Free PostgreSQL)
+1. Create a free project at [Supabase](https://supabase.com).
+2. Go to **Project Settings** &rarr; **Database** &rarr; **Connection string**.
+3. Copy the **URI** (Transaction pooler or direct connection URI):
+   `postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres`
+
+### 2. Backend Deployment (Render Free Web Service)
+1. In [Render](https://dashboard.render.com), click **New** &rarr; **Blueprint** and select this repository (or create a **Web Service** with root directory `backend`).
+2. Supply the required environment variables:
+   - `DATABASE_URL`: Your Supabase connection string.
+   - `CORS_ORIGINS`: Your Vercel frontend URL (e.g., `https://privascope.vercel.app`).
+   - `GOOGLE_CLIENT_ID`: Your Google OAuth 2.0 Web Client ID.
+   - `GOOGLE_CLIENT_SECRET`: Your Google OAuth 2.0 Client Secret.
+3. Render automatically executes `alembic upgrade head` to apply database migrations and boots the FastAPI server.
+
+### 3. Frontend Deployment (Vercel Hobby)
+1. In [Vercel](https://vercel.com), click **Add New** &rarr; **Project** and import this repository.
+2. Set **Root Directory** to `frontend`.
+3. Set **Framework Preset** to `Vite`.
+4. Configure environment variables in Vercel:
+   - `VITE_API_URL`: Your Render backend URL with `/api` suffix (e.g., `https://privascope-api.onrender.com/api`).
+   - `VITE_GOOGLE_CLIENT_ID`: Your Google OAuth 2.0 Web Client ID.
+5. Click **Deploy**. Vercel uses `frontend/vercel.json` to handle client-side SPA routing automatically without 404s.
 
 ---
 
