@@ -1,12 +1,11 @@
 services:
   # PRIVASCOPE Backend Web Service (FastAPI)
-  # Free deployment architecture: Vercel (Frontend) + Render Free (Backend) + Supabase Free (PostgreSQL)
+  # Free deployment architecture: Vercel (Frontend) + Render Free (Backend Docker) + Supabase Free (PostgreSQL)
   - type: web
     name: privascope-api
-    runtime: python
+    runtime: docker
     rootDir: backend
-    buildCommand: bash build.sh
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    dockerfilePath: Dockerfile
     healthCheckPath: /health
     envVars:
       - key: ENV
