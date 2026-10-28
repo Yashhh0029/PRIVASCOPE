@@ -13,6 +13,9 @@ class PdfProcessor(BaseProcessor):
         raw_lines: List[str] = []
         ocr_performed = False
 
+        ocr_pages_processed = 0
+        MAX_OCR_PAGES = 5
+
         for page_idx in range(len(doc)):
             page = doc[page_idx]
             page_num = page_idx + 1
@@ -35,11 +38,12 @@ class PdfProcessor(BaseProcessor):
                         source="pdf"
                     ))
 
-            # If page has no native text (scanned document), run layered OCR
-            if not has_native_text:
+            # If page has no native text (scanned document), run layered OCR (capped to prevent timeouts)
+            if not has_native_text and ocr_pages_processed < MAX_OCR_PAGES:
+                ocr_pages_processed += 1
                 from app.services.ocr_service import ocr_service
                 logger.info(f"Page {page_num} of {file_path.name} contains no digital text. Triggering OCR layer.")
-                pix = page.get_pixmap(dpi=150)
+                pix = page.get_pixmap(dpi=100)
                 temp_img_path = file_path.parent / f"temp_page_{page_num}_{file_path.stem}.png"
                 pix.save(str(temp_img_path))
                 

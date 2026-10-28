@@ -58,8 +58,7 @@ export const ScanPage: React.FC = () => {
     setErrorMsg(null);
     setIsScanning(true);
 
-    // Initial default pending stages for visual start
-    setStages([
+    const initialStages: ScanStage[] = [
       { name: 'validating', label: 'Validating file integrity', status: 'processing' },
       { name: 'extracting', label: 'Extracting document content', status: 'pending' },
       { name: 'ocr', label: 'OCR & optical analysis', status: 'pending' },
@@ -67,11 +66,26 @@ export const ScanPage: React.FC = () => {
       { name: 'context', label: 'Analyzing semantic & structural context', status: 'pending' },
       { name: 'risk', label: 'Evaluating multi-factor privacy risk', status: 'pending' },
       { name: 'completed', label: 'Scan report generated', status: 'pending' },
-    ]);
+    ];
+    setStages(initialStages);
+
+    // Active progressive stage ticker for live real-time feedback
+    let step = 0;
+    const ticker = setInterval(() => {
+      step++;
+      if (step <= 5) {
+        setStages(prev => prev.map((s, idx): ScanStage => {
+          if (idx < step) return { ...s, status: 'completed' };
+          if (idx === step) return { ...s, status: 'processing' };
+          return { ...s, status: 'pending' };
+        }));
+      }
+    }, 700);
 
     try {
       if (activeTab === 'upload') {
         if (!selectedFile) {
+          clearInterval(ticker);
           setErrorMsg("Please select a file to scan.");
           setIsScanning(false);
           return;
@@ -82,27 +96,31 @@ export const ScanPage: React.FC = () => {
 
         // 2. Trigger scan
         const scan = await api.scanDocument(doc.id, sharingPurpose);
+        clearInterval(ticker);
         setStages(scan.stages);
         setOcrStatus(scan.ocr_status);
 
         // Navigate to result
         setTimeout(() => {
           navigate(`/scan/${scan.id}`);
-        }, 600);
+        }, 500);
       } else {
         if (!pastedText.trim()) {
+          clearInterval(ticker);
           setErrorMsg("Please paste or type text to scan.");
           setIsScanning(false);
           return;
         }
 
         const scan = await api.scanText(pastedText, sharingPurpose);
+        clearInterval(ticker);
         setStages(scan.stages);
         setTimeout(() => {
           navigate(`/scan/${scan.id}`);
-        }, 600);
+        }, 500);
       }
     } catch (err: any) {
+      clearInterval(ticker);
       setErrorMsg(err.response?.data?.detail || "Scan pipeline failed to complete.");
       setIsScanning(false);
     }

@@ -28,7 +28,8 @@ def validate_file_signature(file_bytes: bytes, filename: str) -> Tuple[bool, str
         raise FileValidationError("File is empty (0 bytes).")
 
     if ext == "pdf":
-        if not file_bytes.startswith(SIGNATURE_PDF):
+        # Adobe PDF Specification ISO 32000 allows %PDF- anywhere within first 1024 bytes
+        if SIGNATURE_PDF not in file_bytes[:1024]:
             raise FileValidationError("File signature mismatch: declared as PDF but header is not '%PDF-'.")
         return True, "application/pdf"
 
