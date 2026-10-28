@@ -43,6 +43,12 @@ class AadhaarDetector(BaseDetector):
     # Pattern matches 12 digits, optional space or hyphen separator, starting with 2-9
     PATTERN = re.compile(r'\b([2-9]\d{3})[\s\-]?(\d{4})[\s\-]?(\d{4})\b')
     CONTEXT_KEYWORDS = ["aadhaar", "aadhar", "uid", "uidai", "unique id", "identification number", "mera aadhaar"]
+    NEGATIVE_KEYWORDS = [
+        "utr", "txn", "transaction", "ref", "reference", "order", "receipt",
+        "invoice", "payment", "bill", "pnr", "tracking", "token", "hash",
+        "bank ref", "transfer to", "debited from", "credited to", "paid to",
+        "rrn", "cheque", "ack no", "acknowledgment"
+    ]
 
     def mask(self, value: str) -> str:
         clean = re.sub(r'\D', '', value)
@@ -60,27 +66,37 @@ class AadhaarDetector(BaseDetector):
                 clean_digits = re.sub(r'\D', '', raw_match)
                 if len(clean_digits) != 12:
                     continue
+
+                # Context Analysis
+                start_pos = max(0, match.start() - context.text_window_size)
+                end_pos = min(len(text), match.end() + context.text_window_size)
+                surrounding = (text[start_pos:end_pos] + " " + (block.col_name or "") + " " + (block.sheet_name or "")).lower()
+
+                matched_neg = [kw for kw in self.NEGATIVE_KEYWORDS if kw in surrounding]
+                matched_kw = [kw for kw in self.CONTEXT_KEYWORDS if kw in surrounding]
+
+                # Check Verhoeff algorithm
+                verhoeff_valid = validate_verhoeff(clean_digits)
+
+                # 1. Suppress if negative transaction/reference keywords present and no explicit Aadhaar keyword
+                if matched_neg and not matched_kw:
+                    continue
+
+                # 2. Suppress if Verhoeff fails and no explicit Aadhaar keyword (prevents UTR/ref numbers from being classified as Aadhaar)
+                if not verhoeff_valid and not matched_kw:
+                    continue
                 
                 sources = ["regex"]
                 signals = ["12-digit UID pattern matched"]
                 confidence = 0.50
                 
-                # Check Verhoeff algorithm
-                verhoeff_valid = validate_verhoeff(clean_digits)
                 if verhoeff_valid:
                     sources.append("validation")
                     signals.append("Verhoeff checksum passed")
                     confidence += 0.30
                 else:
-                    # If Verhoeff fails, reduce confidence unless strong context proves it's a test/synthetic UID
                     confidence -= 0.15
                 
-                # Context Analysis
-                start_pos = max(0, match.start() - context.text_window_size)
-                end_pos = min(len(text), match.end() + context.text_window_size)
-                surrounding = (text[start_pos:end_pos] + " " + (block.col_name or "") + " " + (block.sheet_name or "")).lower()
-                
-                matched_kw = [kw for kw in self.CONTEXT_KEYWORDS if kw in surrounding]
                 if matched_kw:
                     sources.append("context")
                     signals.append(f"Context keyword matched: '{matched_kw[0]}'")

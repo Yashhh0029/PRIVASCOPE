@@ -7,8 +7,8 @@ class PhoneDetector(BaseDetector):
     entity_type = "PHONE"
     base_severity = 4.0
 
-    # Indian mobile: 10 digits starting with 6, 7, 8, 9, optional +91 or 0 prefix
-    PATTERN = re.compile(r'(?:\+91[\-\s]?|0)?\b([6789]\d{9})\b')
+    # Indian mobile: 10 digits starting with 6, 7, 8, 9, optional +91 or 0 prefix, supports space/dash separation
+    PATTERN = re.compile(r'(?:\+91[\-\s]?|0)?\b([6-9]\d{4}[\-\s]?\d{5}|[6-9]\d{2}[\-\s]?\d{3}[\-\s]?\d{4}|[6-9]\d{9})\b')
     
     POSITIVE_KEYWORDS = [
         "phone", "mobile", "contact", "call", "whatsapp", "tel", "cell",
@@ -42,7 +42,16 @@ class PhoneDetector(BaseDetector):
             text = block.text
             for match in self.PATTERN.finditer(text):
                 raw_match = match.group(0)
-                clean_digits = match.group(1)
+                digits = re.sub(r'\D', '', raw_match)
+                if digits.startswith('91') and len(digits) == 12:
+                    clean_digits = digits[2:]
+                elif digits.startswith('0') and len(digits) == 11:
+                    clean_digits = digits[1:]
+                else:
+                    clean_digits = digits
+
+                if len(clean_digits) != 10 or clean_digits[0] not in '6789':
+                    continue
                 
                 # Check surrounding text
                 start_pos = max(0, match.start() - context.text_window_size)

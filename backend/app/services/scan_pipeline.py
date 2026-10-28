@@ -110,8 +110,20 @@ class ScanPipeline:
             det_context = DetectionContext(text_window_size=60)
             all_detections: List[Detection] = []
 
+            # Include raw_text as synthesis block to catch cross-token & cross-line spans
+            blocks_to_scan = list(extracted.blocks)
+            if extracted.raw_text and len(extracted.blocks) > 1:
+                blocks_to_scan.append(ContentBlock(text=extracted.raw_text, page=1, source="doc_text"))
+            
+            content_to_scan = ExtractedContent(
+                raw_text=extracted.raw_text,
+                blocks=blocks_to_scan,
+                format=extracted.format,
+                metadata=extracted.metadata
+            )
+
             for detector in ALL_DETECTORS:
-                found = detector.detect(extracted, det_context)
+                found = detector.detect(content_to_scan, det_context)
                 all_detections.extend(found)
 
             update_stage("detecting", "completed", f"Detected {len(all_detections)} candidate entities")

@@ -10,6 +10,18 @@ class EmailDetector(BaseDetector):
     PATTERN = re.compile(r'\b([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)\b')
     CONTEXT_KEYWORDS = ["email", "e-mail", "mail", "contact", "email address", "to:", "from:"]
 
+    KNOWN_UPI_DOMAINS = {
+        "ybl", "ibl", "axl", "apl", "okhdfcbank", "oksbi", "okaxis", "okicici",
+        "paytm", "phonepe", "upi", "barodampay", "federal", "airtel", "idfcbank",
+        "aubank", "kotak", "freecharge", "icici", "sbi", "hdfc", "axisbank",
+        "superyes", "fkaxis", "naviaxis", "sliceaxis", "waaxis", "jupiteraxis"
+    }
+
+    GENERIC_SUPPORT_PREFIXES = {
+        "support", "help", "care", "contact", "info", "grievance", "billing",
+        "noreply", "no-reply", "notification", "alerts", "service", "admin"
+    }
+
     def mask(self, value: str) -> str:
         parts = value.strip().split("@")
         if len(parts) == 2:
@@ -35,6 +47,19 @@ class EmailDetector(BaseDetector):
                 parts = raw_match.split("@")
                 if len(parts) != 2 or "." not in parts[1]:
                     continue
+
+                user_part = parts[0].lower()
+                domain_part = parts[1].lower()
+                domain_base = domain_part.split(".")[0]
+
+                # 1. Skip if domain matches a known Indian UPI handle
+                if domain_part in self.KNOWN_UPI_DOMAINS or domain_base in self.KNOWN_UPI_DOMAINS:
+                    continue
+
+                # 2. Skip public enterprise/support email addresses (e.g. support@phonepe.com)
+                if user_part in self.GENERIC_SUPPORT_PREFIXES:
+                    continue
+
                 tld = parts[1].split(".")[-1]
                 if len(tld) < 2 or not tld.isalpha():
                     continue

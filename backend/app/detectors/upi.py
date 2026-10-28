@@ -7,13 +7,16 @@ class UpiDetector(BaseDetector):
     entity_type = "UPI"
     base_severity = 7.0
 
-    PATTERN = re.compile(r'\b([a-zA-Z0-9.\-_]{2,64})@([a-zA-Z]{2,30})\b')
+    # UPI pattern: matches username@handle, ensuring it does NOT continue with a top-level domain like .com/.in
+    PATTERN = re.compile(r'\b([a-zA-Z0-9.\-_]{2,64})@([a-zA-Z]{2,30})(?!\.[a-zA-Z]{2,})\b')
     
     # Common UPI handles in India
     KNOWN_HANDLES = {
-        "okhdfcbank", "oksbi", "okaxis", "okicici", "paytm", "ybl", "ibl", "axl", "apl",
+        "phonepe", "ybl", "ibl", "axl", "apl", "paytm", "okhdfcbank", "oksbi", "okaxis", "okicici",
         "upi", "barodampay", "federal", "airtel", "idfcbank", "aubank", "kotak", "postbank",
-        "freecharge", "icici", "sbi", "hdfc", "axisbank", "indus", "yesbank", "centralbank"
+        "freecharge", "icici", "sbi", "hdfc", "axisbank", "indus", "yesbank", "centralbank",
+        "superyes", "fkaxis", "naviaxis", "sliceaxis", "waaxis", "jupiteraxis", "timecosmos",
+        "ptyes", "ptaxis", "ptsbi", "pthdfc", "cred", "amazonpay", "mobikwik", "pingpay", "kmbl", "abfspay"
     }
     
     COMMON_EMAIL_PROVIDERS = {
@@ -21,7 +24,11 @@ class UpiDetector(BaseDetector):
         "rediffmail", "zoho", "aol", "mail", "example"
     }
 
-    CONTEXT_KEYWORDS = ["upi", "vpa", "virtual payment address", "bhim", "gpay", "google pay", "phonepe", "paytm", "upi id", "pay via upi"]
+    CONTEXT_KEYWORDS = [
+        "upi", "vpa", "virtual payment address", "bhim", "gpay", "google pay",
+        "phonepe", "paytm", "upi id", "pay via upi", "paid to", "transfer to",
+        "debited from", "credited to", "beneficiary", "receiver upi"
+    ]
 
     def mask(self, value: str) -> str:
         parts = value.strip().split("@")
@@ -60,6 +67,12 @@ class UpiDetector(BaseDetector):
                 else:
                     # Generic handle
                     confidence += 0.10
+
+                # Phone-linked UPI VPA check (e.g. 9876543210@ybl)
+                if re.match(r'^[6-9]\d{9}$', user_part):
+                    sources.append("validation")
+                    signals.append("Phone-linked mobile VPA format matched")
+                    confidence += 0.20
                 
                 # Context Analysis
                 start_pos = max(0, match.start() - context.text_window_size)
