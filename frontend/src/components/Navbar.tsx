@@ -28,7 +28,7 @@ const MOBILE_NAV_ITEMS = [
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const [backendHealth, setBackendHealth] = useState<'checking' | 'online' | 'offline'>('checking');
+  const [backendHealth, setBackendHealth] = useState<'online' | 'waking' | 'offline'>('waking');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   // Close mobile drawer on route change
@@ -49,17 +49,32 @@ export const Navbar: React.FC = () => {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
+    let failCount = 0;
+    let timer: any = null;
+
     const check = async () => {
       try {
         await api.checkHealth();
         setBackendHealth('online');
+        failCount = 0;
+        timer = setTimeout(check, 30000);
       } catch {
-        setBackendHealth('offline');
+        failCount++;
+        // On Render free tier, waking up takes 50-90 seconds. Keep status as 'waking'
+        if (failCount < 12) {
+          setBackendHealth('waking');
+          timer = setTimeout(check, 5000);
+        } else {
+          setBackendHealth('offline');
+          timer = setTimeout(check, 15000);
+        }
       }
     };
+
     check();
-    const interval = setInterval(check, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -99,14 +114,16 @@ export const Navbar: React.FC = () => {
           <span
             className={`w-2 h-2 rounded-full ${
               backendHealth === 'online'
-                ? 'bg-priva-low animate-pulse'
-                : backendHealth === 'checking'
-                ? 'bg-priva-medium'
-                : 'bg-priva-critical'
+                ? 'bg-emerald-400 animate-pulse'
+                : backendHealth === 'waking'
+                ? 'bg-amber-400 animate-pulse'
+                : 'bg-rose-500'
             }`}
           />
           <span className="text-priva-muted text-[10px] sm:text-[11px] font-mono uppercase">
-            <span className="hidden sm:inline">API </span>{backendHealth}
+            {backendHealth === 'online' && 'ONLINE'}
+            {backendHealth === 'waking' && 'WAKING UP...'}
+            {backendHealth === 'offline' && 'OFFLINE'}
           </span>
         </div>
 
